@@ -1,2 +1,2 @@
-# geojson-mvt-auto
-Automation of geojson-mvt using TurfJS
+# geojson2mvt-auto
+Automation of geojson2mvt using TurfJS
