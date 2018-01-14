@@ -157,22 +157,23 @@ if (!opts.p) {
     console.log(opts.p)
 }else{
     fs.writeFileSync(tileDirectory + 'index.html', preview(opts.l,center.geometry.coordinates,8));
-}
-var StaticServer = require('static-server');
-var server = new StaticServer({
-  rootPath: tileDirectory,            // required, the root of the server file tree
-  name: 'my-http-server',   // optional, will set "X-Powered-by" HTTP header
-  port: 80,               // optional, defaults to a random port
-  host: '127.0.0.1',       // optional, defaults to any interface
-  cors: '*',                // optional, defaults to undefined
-  followSymlink: true,      // optional, defaults to a 404 error
-  templates: {
-    index: 'index.html',      // optional, defaults to 'index.html'
-    notFound: '404.html'    // optional, defaults to undefined
+    var StaticServer = require('static-server');
+    var server = new StaticServer({
+      rootPath: tileDirectory,            // required, the root of the server file tree
+      name: 'my-http-server',   // optional, will set "X-Powered-by" HTTP header
+      port: 80,               // optional, defaults to a random port
+      host: '127.0.0.1',       // optional, defaults to any interface
+      cors: '*',                // optional, defaults to undefined
+      followSymlink: true,      // optional, defaults to a 404 error
+      templates: {
+        index: 'index.html',      // optional, defaults to 'index.html'
+        notFound: '404.html'    // optional, defaults to undefined
+      }
+    });
+    
+    server.start(function () {
+      console.log('Server listening to', server.port);
+    });
+    opener('http://127.0.0.1/')
   }
-});
 
-server.start(function () {
-  console.log('Server listening to', server.port);
-});
-opener('http://127.0.0.1/')
