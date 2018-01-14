@@ -13,7 +13,7 @@ Tiles are created in a '/tiles/layer/' folder in the current working directory, 
 
 For options use ``vtile -h``.
 
-This is project relies heavily on TurfJS and geojson2mvt.
+This project uses TurfJS to automate static vector tile creation using geojson2mvt.
 
 Still in development. For any issues regarding tile creation see geojson2mvt or geojson-vt. geojson2mvt allows for multiple layers, while this project only allows for one layer at this time.
 
