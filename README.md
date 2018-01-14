@@ -15,8 +15,20 @@ Tiles are created in a '/tiles/layer/' folder in the current working directory, 
 
 For options use ``vtile -h``.
 
-This project uses TurfJS to automate static vector tile creation using geojson2mvt.
+```
+Usage: command [options]
+    --file, -f            your geojson file (default: "sample.geojson")
+    --dir, -d             directory to store the vector tiles (default: "tiles/")
+    --layer, -l           the name of your layer in your vector tile (default: "layer")
+    --minzoom, -z         min zoom level to build tiles (default: 0)
+    --maxzoom, -Z         max zoom to build tiles (tiles will overzoom in mapbox gl, leaflet and ol3) (default: 10)
+    --write, -w           vtile will not write tiles unless -w or -w true (default: false)
+    --preview, -p         writes an index page in the tiles dir to preview your tiles, open at port 80 in tiles dir (default: false)
+    --help, -h            show help
+```
 
-Still in development. For any issues regarding tile creation see geojson2mvt or geojson-vt. geojson2mvt allows for multiple layers, while this project only allows for one layer at this time.
+This project uses [TurfJS](https://github.com/Turfjs/turf/) to automate static vector tile creation using [geojson2mvt](https://github.com/NYCPlanning/geojson2mvt). Only turf/center and turf/bbox are used. 
+
+Still in development. For any issues regarding tile creation see geojson2mvt or [geojson-vt](https://github.com/mapbox/geojson-vt). geojson2mvt allows for multiple layers inside a set of vector tiles, while this project only allows for one layer.
 
 Sample GeoJSON file from here - http://eric.clst.org/tech/usgeojson/

@@ -16,8 +16,7 @@
   "keywords": [
     "vector tiles",
     "geojson",
-    "turf",
-    "turf js"
+    "turfjs"
   ],
   "author": "Malcolm Meyer | zeroSpatial",
   "license": "MIT",
