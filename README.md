@@ -7,7 +7,7 @@ Install
 
 Then to create vector tiles.
 
-    vtile -f "sample.geojson" -w -p -Z 8"
+    vtile -f "sample.geojson" -w -p -Z 8
     
 Tiles are created in a '/tiles/layer/' folder in the current working directory, both of which can be configured. A tilejson is created in the '/tiles/layer/' folder, and if ``-p`` is added, an index page is created in the '/tiles/' folder and opened to preview the tiles.
 
