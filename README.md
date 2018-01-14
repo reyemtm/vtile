@@ -1,7 +1,9 @@
 # vtile
 ### Static vector tiles from a single GeoJSON file. 
 
-``vtile -f "sample.geojson" -w -p -Z 8"``
+    npm install -g
+
+    vtile -f "sample.geojson" -w -p -Z 8"``
 
 This is project relies heavily on TurfJS and geojson2mvt.
 
