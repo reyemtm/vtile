@@ -1,9 +1,11 @@
 # vtile
-### Static vector tiles from a single GeoJSON file. 
+### Static vector tiles from a single GeoJSON file.
+
+Size installed - 10.5 MB.
 
 Install
 
-    npm install -g
+    npm install vtile -g
 
 Then to create vector tiles.
 
