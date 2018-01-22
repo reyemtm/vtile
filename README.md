@@ -1,9 +1,7 @@
 # vtile
 ### Static vector tiles from a single GeoJSON file.
 
-Size installed - 10.5 MB.
-
-Install
+Install (Size installed - 10.5 MB, ``tylr`` size installed 112 MB)
 
     npm install vtile -g
 
