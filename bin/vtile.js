@@ -6,30 +6,40 @@ var bbox = require('@turf/bbox'),
   geojson2mvt = require('geojson2mvt'),
   fs = require('fs'),
   minimist = require('minimist'),
-  preview = require('./preview.js'),
+  preview = require('./assets/preview.js'),
   cliclopts = require('cliclopts'),
-  opener = require('opener');
+  opener = require('opener'),
+  geojsonTest = require('geojson-validation'),
+  ext = require('file-extension'),
+  rmdir = require('rmdir');
 
 var allowedOptions = [
   {
     name: "file",
     abbr: 'f',
-    default: 'sample.geojson',
+    default: '',
     help: 'your geojson file'
-  },
-  {
-    name: "dir",
-    type: 'string',
-    abbr: 'd',
-    default: 'tiles/',
-    help: 'directory to store the vector tiles'
   },
   {
     name: 'layer',
     type: 'string',
     abbr: 'l',
-    default: 'layer',
+    default: '',
     help: 'the name of your layer in your vector tile'
+  },
+  {
+    name: "geojson-dir",
+    type: "string",
+    abbr: "d",
+    default: "./",
+    help: "directory of geojson files you want to convert"
+  },
+  {
+    name: "tiles-dir",
+    type: 'string',
+    abbr: 't',
+    default: 'tiles/',
+    help: 'directory to store the vector tiles'
   },
   {
     name: "minzoom",
@@ -56,7 +66,14 @@ var allowedOptions = [
     name: 'preview',
     type: 'boolean',
     abbr: 'p',
-    help: 'writes an index page in the tiles dir to preview your tiles, open at port 80 in tiles dir',
+    help: 'writes an index page in the tiles dir to preview your tiles (only the first layer in the directory if specified)',
+    default: false
+  },
+  {
+    name: 'resume',
+    type: 'boolean',
+    abbr: 'r',
+    help: 'whether or not to delete the tile[s] directory before writing new tiles - default is to delete the tiles dir',
     default: false
   },
   {
@@ -66,6 +83,7 @@ var allowedOptions = [
     boolean: true
   }
 ]
+
 var options = cliclopts(allowedOptions);
 
 var opts = minimist(process.argv.slice(2), options.options())
@@ -80,83 +98,174 @@ if (opts.z < 0) {
     throw error
 }
 if (opts.Z > 20) {
-    console.log('Very high zoom level detected, stopping application.');
+    console.log('Very high zoom level detected, stopping application. A zoom level of 15 or 16 is likely sufficient.');
     throw error
 }
+
 console.log(process.cwd());
-var tileDirectory = path.join(process.cwd(), opts.d);
+
+var tileDirectory = path.join(process.cwd(), opts.t);
+
 console.log(tileDirectory);
+
 if (!fs.existsSync(tileDirectory)) {
   fs.mkdirSync(tileDirectory);
+}else{
+
 }
 
-var layerDirectory = tileDirectory + opts.l;
-
-if (!fs.existsSync(layerDirectory) && (opts.p || opts.w)) {
-  fs.mkdirSync(layerDirectory);
-}
+var tileLayerName = "";
 
 var start = Date.now();
+/**/
 
-console.log("starting to read " + opts.f + " at " + start);
-
-var geojson = JSON.parse(fs.readFileSync((opts.f), 'utf8'));
-
-var read = Date.now();
-
-console.log('done reading geojson in ' + (read - start));
-
-var bounds = bbox(geojson);
-var center = getcenter(geojson);
-
-console.log("bounds: ", bounds);
-console.log("center: ", center);
-//console.log([bounds[1], bounds[0], bounds[3], bounds[2]]);
-var boundstime = Date.now();
-console.log('bounds and center finished in ' + (boundstime - read));
-
-// write metadata/tilejson and load into map for center and minZoom for tiles
-
-
-var tilejson = {
-  "name":opts.l,
-  "scheme":"tms",
-  "tiles":[
-    'http://127.0.0.1/' + opts.l + '/{z}/{x}/{y}.mvt'
-  ],
-  "vector_layers":[{
-      "id":opts.l,
-      "minzoom":opts.z,
-  }],
-  "bounds": bounds,
-  "minzoom": opts.z
-};
-
-fs.writeFile(layerDirectory + "/" + opts.l + "-tilejson.json", JSON.stringify(tilejson));
-
-var mvtoptions = {
-    rootDir: layerDirectory,
-    bbox: [bounds[1], bounds[0], bounds[3], bounds[2]], //[south,west,north,east]
-    zoom: {
-        min: opts.z,
-        max: opts.Z,
-    },
-    layerName: opts.l
-};
-console.log(mvtoptions)
-
-if (!opts.w) {
-    console.log(opts.w);
-    console.log('not writing tiles, script complete');
-}else{
-    geojson2mvt(geojson, mvtoptions);
-    var tiled = Date.now();
-    console.log("tiles done at " + ((tiled - boundstime)/1000) + ' seconds');
+if (!opts.f) {
+  var geojsonDirectory = path.join(process.cwd(), opts.d);
 }
-if (!opts.p) {
-    console.log(opts.p)
+var geojsonFiles = [];
+
+var mapCenter = [];
+
+/*
+check if a single file is specified, else run through the default or specified directory
+*/
+
+/*
+validate geojson
+*/
+
+function validateGeoJSON(gj, i) {
+  console.log(gj)
+  if (ext(gj) === 'geojson' || ext(gj) === 'json') {
+    console.log('trying to read ' + gj);
+    var tileLayerName = (path.basename(gj)).replace(/\..+$/,'');
+    console.log(tileLayerName);
+    try {
+      if (!opts.f) {
+        var tmpFile = fs.readFileSync(geojsonDirectory + gj)
+        var tmpGeoJSON = JSON.parse(tmpFile)
+       }else{
+        var gjFile = path.join(process.cwd(), gj);
+        var tmpFile = fs.readFileSync(gjFile)
+        var tmpGeoJSON = JSON.parse(tmpFile)
+      }
+      try {
+        geojsonTest.valid(tmpGeoJSON);
+        console.log('valid geojson found!');
+        geojsonFiles.push(tileLayerName);
+        console.log(geojsonFiles);
+        writeTiles(tmpGeoJSON, tileLayerName)
+      }catch(err){
+        console.log(err)
+      }
+    }catch(err){
+      console.log('Something went wrong with ' + gj + '\n' + err + '\n' + 'Exiting vtile :(');
+      process.exit();
+    }
+  }
+}
+
+function writeTiles(data, name) {
+
+  var geojson = data;
+
+  var bounds = bbox(geojson);
+  var center = getcenter(geojson);
+
+  if (geojsonFiles.length === 1) {
+    mapCenter = center;
+  }
+
+  console.log("bounds: ", bounds);
+  console.log("center: ", center);
+  //console.log([bounds[1], bounds[0], bounds[3], bounds[2]]);
+  var boundstime = Date.now();
+
+  // write metadata/tilejson and load into map for center and minZoom for tiles
+
+
+  var tilejson = {
+    "name":name,
+    "scheme":"tms",
+    "tiles":[
+      'http://127.0.0.1/' + name + '/{z}/{x}/{y}.mvt'
+    ],
+    "vector_layers":[{
+        "id":name,
+        "minzoom":opts.z,
+    }],
+    "bounds": bounds,
+    "minzoom": opts.z
+  };
+
+  var layerDirectory = tileDirectory + name;
+
+  if (!fs.existsSync(layerDirectory) && (opts.p || opts.w)) {
+    fs.mkdirSync(layerDirectory);
+  }
+
+  if (opts.p || opts.w) {
+    fs.writeFileSync(layerDirectory + "/" + name + "-tilejson.json", JSON.stringify(tilejson));
+  }
+
+  var mvtoptions = {
+      rootDir: layerDirectory,
+      bbox: [bounds[1], bounds[0], bounds[3], bounds[2]], //[south,west,north,east]
+      zoom: {
+          min: opts.z,
+          max: opts.Z,
+      },
+      layerName: name
+  };
+  console.log(mvtoptions)
+
+  if (!opts.w) {
+      console.log(opts.w);
+      console.log('not writing tiles, script complete');
+  }else{
+    if (!opts.r) {
+      console.log('removing all files in ', layerDirectory, '!');
+      rmdir(path.join(layerDirectory), function(err) {
+        if (err) {
+          console.log(err)
+        }
+        geojson2mvt(geojson, mvtoptions);
+        var tiled = Date.now();
+        console.log("tiles done at " + ((tiled - start)/1000) + ' seconds');
+      })
+    }else{
+      geojson2mvt(geojson, mvtoptions);
+      var tiled = Date.now();
+      console.log("tiles done at " + ((tiled - start)/1000) + ' seconds');
+    }
+  }
+}
+
+if (opts.f === '') {
+  fs.readdirSync(geojsonDirectory).forEach(file => {
+    validateGeoJSON(file)
+  });
+  console.log(geojsonFiles)
+  startServer();
 }else{
-    fs.writeFileSync(tileDirectory + 'index.html', preview(opts.l,center.geometry.coordinates,8));
+  validateGeoJSON(opts.f);
+  startServer();
+}
+
+/*
+write an index.html file and start web server if asked
+*/
+
+function startServer() {
+  if (!opts.p) {
+      console.log(opts.p)
+  }else
+  {
+    if (opts.f === '') {
+      fs.writeFileSync(tileDirectory + 'index.html', preview(geojsonFiles[0],mapCenter.geometry.coordinates,8));
+    }else{
+      fs.writeFileSync(tileDirectory + 'index.html', preview(tileLayerName,mapCenter.geometry.coordinates,8));
+    }
     var StaticServer = require('static-server');
     var server = new StaticServer({
       rootPath: tileDirectory,            // required, the root of the server file tree
@@ -170,10 +279,10 @@ if (!opts.p) {
         notFound: '404.html'    // optional, defaults to undefined
       }
     });
-    
+
     server.start(function () {
       console.log('Server listening to', server.port);
     });
     opener('http://127.0.0.1/')
   }
-
+}
