@@ -1,13 +1,13 @@
 {
   "name": "vtile",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Automation of geojson2mvt using TurfJS",
   "main": "vtile.js",
   "bin": {
     "vtile": "./bin/vtile.js"
   },
   "scripts": {
-    "test": "test.js -gd ./data/ -w true"
+    "test": ""
   },
   "repository": {
     "type": "git",

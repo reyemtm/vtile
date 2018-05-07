@@ -4,14 +4,13 @@ var bbox = require('@turf/bbox'),
   path = require('path'),
   getcenter = require('@turf/center'),
   geojson2mvt = require('geojson2mvt'),
-  fs = require('fs'),
+  fs = require('fs-extra'),
   minimist = require('minimist'),
   preview = require('./preview.js'),
   cliclopts = require('cliclopts'),
   opener = require('opener'),
   geojsonTest = require('geojson-validation'),
-  ext = require('file-extension'),
-  rmdir = require('rmdir');
+  ext = require('file-extension');
 
 var allowedOptions = [
   {
@@ -52,7 +51,7 @@ var allowedOptions = [
     name: "maxzoom",
     type: 'integer',
     abbr: 'Z',
-    default: 10,
+    default: 7,
     help: "max zoom to build tiles (tiles will overzoom in mapbox gl, leaflet and ol3)"
   },
   {
@@ -225,14 +224,14 @@ function writeTiles(data, name) {
   }else{
     if (!opts.r) {
       console.log('removing all files in ', layerDirectory, '!');
-      rmdir(path.join(layerDirectory), function(err) {
-        if (err) {
-          console.log(err)
-        }
+      try {
+        fs.removeSync(path.join(layerDirectory));
         geojson2mvt(geojson, mvtoptions);
         var tiled = Date.now();
         console.log("tiles done at " + ((tiled - start)/1000) + ' seconds');
-      })
+        }catch(err) {
+        console.log(err)
+      }
     }else{
       geojson2mvt(geojson, mvtoptions);
       var tiled = Date.now();
