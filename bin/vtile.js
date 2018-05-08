@@ -97,7 +97,7 @@ if (opts.z < 0) {
     throw error
 }
 if (opts.Z > 20) {
-    console.log('Very high zoom level detected, stopping application. A zoom level of 15 or 16 is likely sufficient.');
+    console.log('Very high zoom level detected, stopping application. A zoom level of 14 to 16 is likely sufficient.');
     throw error
 }
 
@@ -197,14 +197,21 @@ function writeTiles(data, name) {
     "minzoom": opts.z
   };
 
-  var layerDirectory = tileDirectory + name;
+  var layerDirectory = path.join(process.cwd(), opts.t + name + "/");
+  console.log(layerDirectory);
+
 
   if (!fs.existsSync(layerDirectory) && (opts.p || opts.w)) {
     fs.mkdirSync(layerDirectory);
   }
 
-  if (opts.p || opts.w) {
-    fs.writeFileSync(layerDirectory + "/" + name + "-tilejson.json", JSON.stringify(tilejson));
+  if (opts.w) {
+    console.log('trying to write tilejson');
+    console.log(layerDirectory + name + "-tilejson.json");
+    console.log(JSON.stringify(tilejson));
+    fs.writeFile(layerDirectory + name + "-tilejson.json", JSON.stringify(tilejson), function() {
+      console.log('successfully wrote tilejson')
+    });
   }
 
   var mvtoptions = {
