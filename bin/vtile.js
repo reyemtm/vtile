@@ -166,6 +166,22 @@ function validateGeoJSON(gj, i) {
 
 function writeTiles(data, name) {
 
+  var layerDirectory = path.join(process.cwd(), opts.t + name + "/");
+  console.log(layerDirectory);
+
+  if (!opts.r) {
+    console.log('removing all files in ', layerDirectory, '!');
+    try {
+      fs.removeSync(path.join(layerDirectory));
+    }catch(e){
+      console.log(e)
+    }
+  }
+  
+  if (!fs.existsSync(layerDirectory) && (opts.p || opts.w)) {
+    fs.mkdirSync(layerDirectory);
+  }
+
   var geojson = data;
 
   var bounds = bbox(geojson);
@@ -197,14 +213,6 @@ function writeTiles(data, name) {
     "minzoom": opts.z
   };
 
-  var layerDirectory = path.join(process.cwd(), opts.t + name + "/");
-  console.log(layerDirectory);
-
-
-  if (!fs.existsSync(layerDirectory) && (opts.p || opts.w)) {
-    fs.mkdirSync(layerDirectory);
-  }
-
   if (opts.w) {
     console.log('trying to write tilejson');
     console.log(layerDirectory + name + "-tilejson.json");
@@ -229,21 +237,9 @@ function writeTiles(data, name) {
       console.log(opts.w);
       console.log('not writing tiles, script complete');
   }else{
-    if (!opts.r) {
-      console.log('removing all files in ', layerDirectory, '!');
-      try {
-        fs.removeSync(path.join(layerDirectory));
-        geojson2mvt(geojson, mvtoptions);
-        var tiled = Date.now();
-        console.log("tiles done at " + ((tiled - start)/1000) + ' seconds');
-        }catch(err) {
-        console.log(err)
-      }
-    }else{
-      geojson2mvt(geojson, mvtoptions);
-      var tiled = Date.now();
-      console.log("tiles done at " + ((tiled - start)/1000) + ' seconds');
-    }
+    geojson2mvt(geojson, mvtoptions);
+    var tiled = Date.now();
+    console.log("tiles done at " + ((tiled - start)/1000) + ' seconds');
   }
 }
 
