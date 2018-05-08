@@ -28,13 +28,14 @@
     "@turf/bbox": "^5.1.5",
     "@turf/center": "^5.1.5",
     "cliclopts": "^1.1.1",
+    "file-extension": "^4.0.2",
+    "fs-extra": "^6.0.0",
+    "geojson-validation": "^0.2.0",
+    "geojson-vt": "^3.1.1",
     "geojson2mvt": "0.0.4",
     "minimist": "^1.2.0",
     "opener": "^1.4.3",
-    "static-server": "^3.0.0",
-    "geojson-validation": "^0.2.0",
-    "rmdir":"^1.2.0",
-    "file-extension":"^4.0.2",
-    "fs-extra": "^6.0.0"
+    "rmdir": "^1.2.0",
+    "static-server": "^3.0.0"
   }
 }
