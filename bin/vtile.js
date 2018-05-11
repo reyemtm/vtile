@@ -162,6 +162,8 @@ function validateGeoJSON(gj, i) {
         var gjFile = path.join(process.cwd(), gj);
         var tmpFile = fs.readFileSync(gjFile);
         var tmpGeoJSON = JSON.parse(tmpFile)
+      }
+      try {
         if (opts.x) {
           tmpGeoJSON.features.forEach(feature => {
             for (var p in feature.properties) {
@@ -173,8 +175,6 @@ function validateGeoJSON(gj, i) {
             return feature;
           });
         }
-      }
-      try {
         geojsonTest.valid(tmpGeoJSON);
         console.log('valid geojson found!');
         geojsonFiles.push(tileLayerName);
