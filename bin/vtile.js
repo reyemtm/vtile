@@ -168,7 +168,6 @@ function validateGeoJSON(gj, i) {
           tmpGeoJSON.features.forEach(feature => {
             for (var p in feature.properties) {
               if (opts.x.indexOf(p) > -1) {
-                console.log('true');
                 delete feature.properties[p];
               }
             }
