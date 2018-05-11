@@ -13,6 +13,8 @@ Or a directory of files:
 
     vtile -w -z 0 Z 14
 
+**v 0.1.7** vtile adds a field to each feature called vtlid which is a unique identifier for each feature - if this conflicts with a field you already have you will need to edit the vtile.js file
+
 **v 0.1.4** vtile will delete one or more fields from your geojson, and optionally output that geojson file
 
 **v 0.1.3** vtile will tile all geojson files in a folder, with the layer names in the tiles being the file names. If you just want to convert one file, simply add that file ``-f "./data/ohio.geojson"``.

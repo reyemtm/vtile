@@ -10,7 +10,9 @@ var bbox = require('@turf/bbox'),
   cliclopts = require('cliclopts'),
   opener = require('opener'),
   geojsonTest = require('geojson-validation'),
-  ext = require('file-extension');
+  ext = require('file-extension'),
+  uuidv1 = require('uuid/v1');
+
 
 var allowedOptions = [
   {
@@ -171,8 +173,14 @@ function validateGeoJSON(gj, i) {
                 delete feature.properties[p];
               }
             }
+            feature.properties["vtlid"] = uuidv1(); /*generate unique id for each feature*/
             return feature;
           });
+        }else{
+          tmpGeoJSON.features.forEach(feature => {
+            feature.properties["vtlid"] = uuidv1();
+            return feature
+          })
         }
         geojsonTest.valid(tmpGeoJSON);
         console.log('valid geojson found!');
