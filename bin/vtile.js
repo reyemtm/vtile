@@ -61,7 +61,7 @@ var allowedOptions = [
     type: 'string',
     abbr: 'x',
     default: [''],
-    help: 'remove these properties from the geojson data'
+    help: 'remove these properties from the geojson data, one entry for each field ie -x ID -x Name'
   },
   {
     name: 'output',

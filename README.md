@@ -33,7 +33,7 @@ Usage: command [options]
     --geojson-dir, -d     directory of geojson you want to convert (default './')
     --minzoom, -z         min zoom level to build tiles (default: 0)
     --maxzoom, -Z         max zoom to build tiles (tiles will overzoom in mapbox gl, leaflet and ol3) (default: 7)
-    --extract, -x         remove these propertiesfrom the geojson file, i.e ["COUNTY", "Shape_Length"]
+    --extract, -x         remove these propertiesfrom the geojson file, one for each field, i.e -x "COUNTY" -x "Shape_Length"
     --output, -o          output the geojson, useful if using the extract option
     --write, -w           vtile will not write tiles unless -w or -w true (default: false)
     --preview, -p         writes an index page in the tiles dir to preview your tiles (default: false)
