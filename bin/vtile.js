@@ -55,6 +55,20 @@ var allowedOptions = [
     help: "max zoom to build tiles (tiles will overzoom in mapbox gl, leaflet and ol3)"
   },
   {
+    name: 'extract',
+    type: 'string',
+    abbr: 'x',
+    default: [''],
+    help: 'remove these properties from the geojson data'
+  },
+  {
+    name: 'output',
+    type: 'boolean',
+    abbr: 'o',
+    default: false,
+    help: 'output the geojson, useful if using the extract option'
+  },
+  {
     name: "write",
     type: 'boolean',
     abbr: 'w',
@@ -85,9 +99,10 @@ var allowedOptions = [
 
 var options = cliclopts(allowedOptions);
 
-var opts = minimist(process.argv.slice(2), options.options())
+var opts = minimist(process.argv.slice(2), options.options());
+console.log(opts);
 
-if (opts.help) {
+if (opts.h) {
   console.log('vtile creates vector tiles in mvt format from a geojson file \n \n Usage: command [options]')
   options.print()
   process.exit()
@@ -145,14 +160,27 @@ function validateGeoJSON(gj, i) {
         var tmpGeoJSON = JSON.parse(tmpFile)
        }else{
         var gjFile = path.join(process.cwd(), gj);
-        var tmpFile = fs.readFileSync(gjFile)
+        var tmpFile = fs.readFileSync(gjFile);
         var tmpGeoJSON = JSON.parse(tmpFile)
+        if (opts.x) {
+          tmpGeoJSON.features.forEach(feature => {
+            for (var p in feature.properties) {
+              if (opts.x.indexOf(p) > -1) {
+                console.log('true');
+                delete feature.properties[p];
+              }
+            }
+            return feature;
+          });
+        }
       }
       try {
         geojsonTest.valid(tmpGeoJSON);
         console.log('valid geojson found!');
         geojsonFiles.push(tileLayerName);
-        console.log(geojsonFiles);
+        if (opts.o) {
+          fs.writeFileSync(tileDirectory + tileLayerName + ".geojson", JSON.stringify(tmpGeoJSON));
+        }
         writeTiles(tmpGeoJSON, tileLayerName)
       }catch(err){
         console.log(err)
@@ -167,8 +195,6 @@ function validateGeoJSON(gj, i) {
 function writeTiles(data, name) {
 
   var layerDirectory = path.join(process.cwd(), opts.t + name + "/");
-  console.log(layerDirectory);
-
   if (!opts.r) {
     console.log('removing all files in ', layerDirectory, '!');
     try {
@@ -177,7 +203,7 @@ function writeTiles(data, name) {
       console.log(e)
     }
   }
-  
+
   if (!fs.existsSync(layerDirectory) && (opts.p || opts.w)) {
     fs.mkdirSync(layerDirectory);
   }

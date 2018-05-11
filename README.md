@@ -13,8 +13,9 @@ Or a directory of files:
 
     vtile -w -z 0 Z 14
 
+**v 0.1.4** vtile will delete one or more fields from your geojson, and optionally output that geojson file
 
-**NEW!** vtile will tile all geojson files in a folder, with the layer names in the tiles being the file names. If you just want to convert one file, simply add that file ``-f "./data/ohio.geojson"``.
+**v 0.1.3** vtile will tile all geojson files in a folder, with the layer names in the tiles being the file names. If you just want to convert one file, simply add that file ``-f "./data/ohio.geojson"``.
 
 Tiles are created in a '/tiles/your file name/' folder in the current working directory, both of which can be configured. A tilejson is created in the '/tiles/your file name/' folder, and if ``-p`` is added, an index page is created in the '/tiles/' folder and opened to preview the tiles. If tiling all files in a folder, the preview only will add the first file.
 
@@ -30,6 +31,8 @@ Usage: command [options]
     --geojson-dir, -d     directory of geojson you want to convert (default './')
     --minzoom, -z         min zoom level to build tiles (default: 0)
     --maxzoom, -Z         max zoom to build tiles (tiles will overzoom in mapbox gl, leaflet and ol3) (default: 7)
+    --extract, -x         remove these propertiesfrom the geojson file, i.e ["COUNTY", "Shape_Length"]
+    --output, -o          output the geojson, useful if using the extract option
     --write, -w           vtile will not write tiles unless -w or -w true (default: false)
     --preview, -p         writes an index page in the tiles dir to preview your tiles (default: false)
     --resume, -r          vtile will delete all the files and folders in the tiles directory unless this is true (default: false)
