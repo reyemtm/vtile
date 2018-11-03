@@ -1,6 +1,6 @@
 {
   "name": "vtile",
-  "version": "0.1.8",
+  "version": "0.2.1",
   "description": "Automation of geojson2mvt using TurfJS",
   "main": "vtile.js",
   "bin": {
@@ -16,7 +16,8 @@
   "keywords": [
     "vector tiles",
     "geojson",
-    "turfjs"
+    "turfjs",
+    "spatial"
   ],
   "author": "Malcolm Meyer | zeroSpatial",
   "license": "MIT",
@@ -31,12 +32,11 @@
     "file-extension": "^4.0.2",
     "fs-extra": "^6.0.0",
     "geojson-validation": "^0.2.0",
-    "geojson-vt": "^3.1.1",
-    "geojson2mvt": "0.0.4",
+    "geojson-vt": "^3.2.1",
     "minimist": "^1.2.0",
     "opener": "^1.4.3",
-    "rmdir": "^1.2.0",
     "static-server": "^3.0.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "vt-pbf": "^2.1.4"
   }
 }

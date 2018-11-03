@@ -1,0 +1,1 @@
+{"name":"usstates","scheme":"tms","tiles":["http://127.0.0.1/usstates/{z}/{x}/{y}.mvt"],"vector_layers":[{"id":"usstates","minzoom":0}],"bounds":[-179.14734,17.884813,179.77847,71.352561],"minzoom":0}

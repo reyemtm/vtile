@@ -3,7 +3,7 @@
 var bbox = require('@turf/bbox'),
   path = require('path'),
   getcenter = require('@turf/center'),
-  geojson2mvt = require('geojson2mvt'),
+  geojson2mvt = require('../src/geojson2mvt'),
   fs = require('fs-extra'),
   minimist = require('minimist'),
   preview = require('./preview.js'),
@@ -19,21 +19,14 @@ var allowedOptions = [
     name: "file",
     abbr: 'f',
     default: '',
-    help: 'your geojson file'
-  },
-  {
-    name: 'layer',
-    type: 'string',
-    abbr: 'l',
-    default: '',
-    help: 'the name of your layer in your vector tile'
+    help: 'your geojson file if not using a directory, layer name will be the name of the file (no spaces please)'
   },
   {
     name: "geojson-dir",
     type: "string",
     abbr: "d",
     default: "./",
-    help: "directory of geojson files you want to convert"
+    help: "directory of geojson you want to convert"
   },
   {
     name: "tiles-dir",
@@ -74,8 +67,8 @@ var allowedOptions = [
     name: "write",
     type: 'boolean',
     abbr: 'w',
-    help: "vtile will not write tiles unless -w or -w true",
-    default: false
+    help: "CHANGED default true, vtile will not write tiles if set to false",
+    default: true
   },
   {
     name: 'preview',
@@ -97,17 +90,19 @@ var allowedOptions = [
     help: 'show help',
     boolean: true
   }
-]
+];
 
 var options = cliclopts(allowedOptions);
 
 var opts = minimist(process.argv.slice(2), options.options());
+opts.w = (opts.w === true || opts.w === 'true' || opts.write === true || opts.write === 'true') ? true : false;
+opts.write = opts.w;
 console.log(opts);
 
-if (opts.h) {
-  console.log('vtile creates vector tiles in mvt format from a geojson file \n \n Usage: command [options]')
-  options.print()
-  process.exit()
+if (opts.h || opts.help) {
+  console.log('vtile creates vector tiles in mvt format from a geojson file(s) \n \n Usage: command [options]');
+  options.print();
+  process.exit();
 }
 
 if (opts.z < 0) {
@@ -130,7 +125,8 @@ if (!fs.existsSync(tileDirectory)) {
 
 }
 
-var tileLayerName = "";
+var tileLayerName = "",
+bounds;
 
 var start = Date.now();
 /**/
@@ -154,7 +150,7 @@ function validateGeoJSON(gj, i) {
   console.log(gj)
   if (ext(gj) === 'geojson' || ext(gj) === 'json') {
     console.log('trying to read ' + gj);
-    var tileLayerName = (path.basename(gj)).replace(/\..+$/,'');
+    tileLayerName = (path.basename(gj)).replace(/\..+$/,'');
     console.log(tileLayerName);
     try {
       if (!opts.f) {
@@ -217,7 +213,7 @@ function writeTiles(data, name) {
 
   var geojson = data;
 
-  var bounds = bbox(geojson);
+  bounds = bbox(geojson);
   var center = getcenter(geojson);
 
   if (geojsonFiles.length === 1) {
@@ -243,14 +239,15 @@ function writeTiles(data, name) {
         "minzoom":opts.z,
     }],
     "bounds": bounds,
-    "minzoom": opts.z
+    "minzoom": opts.z,
+    "maxzoom": opts.Z
   };
 
   if (opts.w) {
     console.log('trying to write tilejson');
     console.log(layerDirectory + name + "-tilejson.json");
     console.log(JSON.stringify(tilejson));
-    fs.writeFile(layerDirectory + name + "-tilejson.json", JSON.stringify(tilejson), function() {
+    fs.writeFile(layerDirectory + name + "-tilejson.json", JSON.stringify(tilejson, null, 2), function() {
       console.log('successfully wrote tilejson')
     });
   }
@@ -297,9 +294,26 @@ function startServer() {
   }else
   {
     if (opts.f === '') {
-      fs.writeFileSync(tileDirectory + 'index.html', preview(geojsonFiles[0],mapCenter.geometry.coordinates,8));
+      var geojsonData;
+      try {
+        geojsonData = fs.readFileSync(geojsonDirectory + geojsonFiles[0] + '.geojson');
+      }
+      catch(err) {
+        console.log(err);
+        try {
+          geojsonData = fs.readFileSync(geojsonDirectory + geojsonFiles[0] + '.json');
+        }
+        catch(err) {
+          console.log(err);
+        }
+      }
+      var geojsonJson = JSON.parse(geojsonData);
+      bounds = bbox(geojsonJson);
+      let mapBounds = [ [bounds[0], bounds[1]], [bounds[2], bounds[3]] ];
+      fs.writeFileSync(tileDirectory + 'index.html', preview(geojsonFiles[0],mapCenter.geometry.coordinates,4, mapBounds));
     }else{
-      fs.writeFileSync(tileDirectory + 'index.html', preview(tileLayerName,mapCenter.geometry.coordinates,8));
+      let mapBounds = [ [bounds[0], bounds[1]], [bounds[2], bounds[3]] ];
+      fs.writeFileSync(tileDirectory + 'index.html', preview(tileLayerName,mapCenter.geometry.coordinates,4,mapBounds));
     }
     var StaticServer = require('static-server');
     var server = new StaticServer({

@@ -1,0 +1,1 @@
+{"name":"ohio","scheme":"tms","tiles":["http://127.0.0.1/ohio/{z}/{x}/{y}.mvt"],"vector_layers":[{"id":"ohio","minzoom":0}],"bounds":[-84.820159,38.403202,-80.518693,41.977523],"minzoom":0}

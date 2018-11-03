@@ -1,12 +1,9 @@
-var fs = require('fs');
 
-const createMap = function(lyr, cntr, maxzoom, bounds) {
-    return `
     <!DOCTYPE html>
     <html>
     <head>
         <meta charset="utf-8" />
-        <title>${lyr} Preview Map</title>
+        <title>ohio Preview Map</title>
         <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
         <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
         <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
@@ -27,9 +24,9 @@ const createMap = function(lyr, cntr, maxzoom, bounds) {
             "version": 8,
             "name": "blank",
             "sources": {
-                "${lyr}preview": {
+                "ohiopreview": {
                     "type": "vector",
-                    "url": "${lyr}/${lyr}-tilejson.json"
+                    "url": "ohio/ohio-tilejson.json"
                 }
             },
             "layers": [{
@@ -39,10 +36,10 @@ const createMap = function(lyr, cntr, maxzoom, bounds) {
                     "background-color": "whitesmoke"
                 }
             },{
-                "id": "${lyr}1",
+                "id": "ohio1",
                 "type": "fill-extrusion",
-                "source": "${lyr}preview",
-                "source-layer": "${lyr}",
+                "source": "ohiopreview",
+                "source-layer": "ohio",
                 "paint": {
                     "fill-extrusion-color": "whitesmoke",
                     "fill-extrusion-height": {
@@ -55,10 +52,10 @@ const createMap = function(lyr, cntr, maxzoom, bounds) {
                 "filter": ["has", "render_height"]
                 },
             {
-                "id": "${lyr}2",
+                "id": "ohio2",
                 "type": "fill",
-                "source": "${lyr}preview",
-                "source-layer": "${lyr}",
+                "source": "ohiopreview",
+                "source-layer": "ohio",
                 "paint": {
                 "fill-color": "whitesmoke",
                 "fill-outline-color": "orange"
@@ -67,10 +64,10 @@ const createMap = function(lyr, cntr, maxzoom, bounds) {
                 "filter": ["==", "$type", "Polygon"]
             },
             {
-                "id": "${lyr}3",
+                "id": "ohio3",
                 "type": "line",
-                "source": "${lyr}preview",
-                "source-layer": "${lyr}",
+                "source": "ohiopreview",
+                "source-layer": "ohio",
                 "paint": {
                 "line-color": "orange"
                 },
@@ -78,10 +75,10 @@ const createMap = function(lyr, cntr, maxzoom, bounds) {
                 "filter": ["==", "$type", "LineString"]
             },
             {
-                "id": "${lyr}4",
+                "id": "ohio4",
                 "type": "circle",
-                "source": "${lyr}preview",
-                "source-layer": "${lyr}",
+                "source": "ohiopreview",
+                "source-layer": "ohio",
                 "paint": {
                 "circle-radius": {
                     "stops": [
@@ -97,24 +94,21 @@ const createMap = function(lyr, cntr, maxzoom, bounds) {
             }
         ]
         },
-        center: [${cntr}],
+        center: [-82.669426,40.1903625],
         zoom: 4,
         hash: true
     });
 
     map.addControl(new mapboxgl.NavigationControl());
     map.addControl(new MapboxInspect({
-      showInspectMap: false
+      showInspectMap: true
     }));
 
     map.on('load', function() {
-      map.fitBounds([[${bounds[0]}],[${bounds[1]}]])
+      map.fitBounds([[-84.820159,38.403202],[-80.518693,41.977523]])
     });
     </script>
 
     </body>
     </html>
-    `
-};
-
-module.exports = createMap
+    
