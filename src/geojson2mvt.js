@@ -25,6 +25,7 @@ var geojson2mvt = function (options) {
       maxZoom: options.zoom.max,
       indexMaxZoom: options.zoom.max,
       indexMaxPoints: 0,
+      tolerance: options.tolerance,
       generateId: true,
     });
   }

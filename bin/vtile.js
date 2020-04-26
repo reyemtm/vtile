@@ -1,25 +1,25 @@
 #!/usr/bin/env node
 
-var bbox = require('@turf/bbox'),
-  path = require('path'),
-  getcenter = require('@turf/center'),
-  geojson2mvt = require('../src/geojson2mvt'),
-  fs = require('fs-extra'),
-  minimist = require('minimist'),
-  preview = require('./preview.js'),
-  cliclopts = require('cliclopts'),
-  opener = require('opener'),
-  geojsonTest = require('geojson-validation'),
-  ext = require('file-extension'),
-  uuidv1 = require('uuid/v1');
+var bbox = require("@turf/bbox"),
+  path = require("path"),
+  getcenter = require("@turf/center"),
+  geojson2mvt = require("../src/geojson2mvt"),
+  fs = require("fs-extra"),
+  minimist = require("minimist"),
+  preview = require("./preview.js"),
+  cliclopts = require("cliclopts"),
+  opener = require("opener"),
+  geojsonTest = require("geojson-validation"),
+  ext = require("file-extension"),
+  uuidv1 = require("uuid/v1");
 
 
 var allowedOptions = [
   {
     name: "file",
-    abbr: 'f',
-    default: '',
-    help: 'your geojson file if not using a directory, layer name will be the name of the file (no spaces please)'
+    abbr: "f",
+    default: "",
+    help: "your geojson file if not using a directory, layer name will be the name of the file (no spaces please)"
   },
   {
     name: "geojson-dir",
@@ -30,64 +30,71 @@ var allowedOptions = [
   },
   {
     name: "tiles-dir",
-    type: 'string',
-    abbr: 't',
-    default: 'tiles/',
-    help: 'directory to store the vector tiles'
+    type: "string",
+    abbr: "t",
+    default: "tiles/",
+    help: "directory to store the vector tiles"
   },
   {
     name: "minzoom",
-    type: 'integer',
-    abbr: 'z',
+    type: "integer",
+    abbr: "z",
     default: 0,
     help: "min zoom level to build tiles"
   },
   {
     name: "maxzoom",
-    type: 'integer',
-    abbr: 'Z',
+    type: "integer",
+    abbr: "Z",
     default: 7,
     help: "max zoom to build tiles (tiles will overzoom in mapbox gl, leaflet and ol3)"
   },
   {
-    name: 'extract',
-    type: 'string',
-    abbr: 'x',
-    default: [''],
-    help: 'remove these properties from the geojson data, one entry for each field ie -x ID -x Name'
+    name: "tolerance",
+    type: "integer",
+    abbr: "s",
+    default: 3,
+    help: "simplification tolerance setting for geojson-vt"
   },
   {
-    name: 'output',
-    type: 'boolean',
-    abbr: 'o',
+    name: "extract",
+    type: "string",
+    abbr: "x",
+    default: [""],
+    help: "remove these properties from the geojson data, one entry for each field ie -x ID -x Name"
+  },
+  {
+    name: "output",
+    type: "boolean",
+    abbr: "o",
     default: false,
-    help: 'output the geojson, useful if using the extract option'
+    help: "output the geojson, useful if using the extract option"
   },
   {
     name: "write",
-    type: 'boolean',
-    abbr: 'w',
+    type: "boolean",
+    abbr: "w",
     help: "CHANGED default true, vtile will not write tiles if set to false",
     default: true
   },
   {
-    name: 'preview',
-    type: 'boolean',
-    abbr: 'p',
-    help: 'writes an index page in the tiles dir to preview your tiles (only the first layer in the directory if specified)',
+    name: "preview",
+    type: "boolean",
+    abbr: "p",
+    help: "writes an index page in the tiles dir to preview your tiles (only the first layer in the directory if specified)",
     default: false
   },
   {
-    name: 'resume',
-    type: 'boolean',
-    abbr: 'r',
-    help: 'whether or not to delete the tile[s] directory before writing new tiles - default is to delete the tiles dir',
+    name: "resume",
+    type: "boolean",
+    abbr: "r",
+    help: "whether or not to delete the tile[s] directory before writing new tiles - default is to delete the tiles dir",
     default: false
   },
   {
-    name: 'help',
-    abbr: 'h',
-    help: 'show help',
+    name: "help",
+    abbr: "h",
+    help: "show help",
     boolean: true
   }
 ];
@@ -95,12 +102,12 @@ var allowedOptions = [
 var options = cliclopts(allowedOptions);
 
 var opts = minimist(process.argv.slice(2), options.options());
-opts.w = (opts.w === true || opts.w === 'true' || opts.write === true || opts.write === 'true') ? true : false;
+opts.w = (opts.w === true || opts.w === "true" || opts.write === true || opts.write === "true") ? true : false;
 opts.write = opts.w;
 console.log(opts);
 
 if (opts.h || opts.help) {
-  console.log('vtile creates vector tiles in mvt format from a geojson file(s) \n \n Usage: command [options]');
+  console.log("vtile creates vector tiles in mvt format from a geojson file(s) \n \n Usage: command [options]");
   options.print();
   process.exit();
 }
@@ -109,7 +116,7 @@ if (opts.z < 0) {
     throw error
 }
 if (opts.Z > 20) {
-    console.log('Very high zoom level detected, stopping application. A zoom level of 14 to 16 is likely sufficient.');
+    console.log("Very high zoom level detected, stopping application. A zoom level of 14 to 16 is likely sufficient.");
     throw error
 }
 
@@ -148,9 +155,9 @@ validate geojson
 
 function validateGeoJSON(gj, i) {
   console.log(gj)
-  if (ext(gj) === 'geojson' || ext(gj) === 'json') {
-    console.log('trying to read ' + gj);
-    tileLayerName = (path.basename(gj)).replace(/\..+$/,'');
+  if (ext(gj) === "geojson" || ext(gj) === "json") {
+    console.log("trying to read " + gj);
+    tileLayerName = (path.basename(gj)).replace(/\..+$/,"");
     console.log(tileLayerName);
     try {
       if (!opts.f) {
@@ -179,7 +186,7 @@ function validateGeoJSON(gj, i) {
           })
         }
         geojsonTest.valid(tmpGeoJSON);
-        console.log('valid geojson found!');
+        console.log("valid geojson found!");
         geojsonFiles.push(tileLayerName);
         if (opts.o) {
           fs.writeFileSync(tileDirectory + tileLayerName + ".geojson", JSON.stringify(tmpGeoJSON));
@@ -189,7 +196,7 @@ function validateGeoJSON(gj, i) {
         console.log(err)
       }
     }catch(err){
-      console.log('Something went wrong with ' + gj + '\n' + err + '\n' + 'Exiting vtile :(');
+      console.log("Something went wrong with " + gj + "\n" + err + "\n" + "Exiting vtile :(");
       process.exit();
     }
   }
@@ -199,7 +206,7 @@ function writeTiles(data, name) {
 
   var layerDirectory = path.join(process.cwd(), opts.t + name + "/");
   if (!opts.r) {
-    console.log('removing all files in ', layerDirectory, '!');
+    console.log("removing all files in ", layerDirectory, "!");
     try {
       fs.removeSync(path.join(layerDirectory));
     }catch(e){
@@ -232,7 +239,7 @@ function writeTiles(data, name) {
     "name":name,
     "scheme":"tms",
     "tiles":[
-      'http://127.0.0.1/' + name + '/{z}/{x}/{y}.mvt'
+      "http://127.0.0.1/" + name + "/{z}/{x}/{y}.mvt"
     ],
     "vector_layers":[{
         "id":name,
@@ -244,11 +251,11 @@ function writeTiles(data, name) {
   };
 
   if (opts.w) {
-    console.log('trying to write tilejson');
+    console.log("trying to write tilejson");
     console.log(layerDirectory + name + "-tilejson.json");
     console.log(JSON.stringify(tilejson));
     fs.writeFile(layerDirectory + name + "-tilejson.json", JSON.stringify(tilejson, null, 2), function() {
-      console.log('successfully wrote tilejson')
+      console.log("successfully wrote tilejson")
     });
   }
 
@@ -265,15 +272,15 @@ function writeTiles(data, name) {
 
   if (!opts.w) {
       console.log(opts.w);
-      console.log('not writing tiles, script complete');
+      console.log("not writing tiles, script complete");
   }else{
     geojson2mvt(geojson, mvtoptions);
     var tiled = Date.now();
-    console.log("tiles done at " + ((tiled - start)/1000) + ' seconds');
+    console.log("tiles done at " + ((tiled - start)/1000) + " seconds");
   }
 }
 
-if (opts.f === '') {
+if (opts.f === "") {
   fs.readdirSync(geojsonDirectory).forEach(file => {
     validateGeoJSON(file)
   });
@@ -293,15 +300,15 @@ function startServer() {
       console.log(opts.p)
   }else
   {
-    if (opts.f === '') {
+    if (opts.f === "") {
       var geojsonData;
       try {
-        geojsonData = fs.readFileSync(geojsonDirectory + geojsonFiles[0] + '.geojson');
+        geojsonData = fs.readFileSync(geojsonDirectory + geojsonFiles[0] + ".geojson");
       }
       catch(err) {
         console.log(err);
         try {
-          geojsonData = fs.readFileSync(geojsonDirectory + geojsonFiles[0] + '.json');
+          geojsonData = fs.readFileSync(geojsonDirectory + geojsonFiles[0] + ".json");
         }
         catch(err) {
           console.log(err);
@@ -310,28 +317,28 @@ function startServer() {
       var geojsonJson = JSON.parse(geojsonData);
       bounds = bbox(geojsonJson);
       let mapBounds = [ [bounds[0], bounds[1]], [bounds[2], bounds[3]] ];
-      fs.writeFileSync(tileDirectory + 'index.html', preview(geojsonFiles[0],mapCenter.geometry.coordinates,4, mapBounds));
+      fs.writeFileSync(tileDirectory + "index.html", preview(geojsonFiles[0],mapCenter.geometry.coordinates,4, mapBounds));
     }else{
       let mapBounds = [ [bounds[0], bounds[1]], [bounds[2], bounds[3]] ];
-      fs.writeFileSync(tileDirectory + 'index.html', preview(tileLayerName,mapCenter.geometry.coordinates,4,mapBounds));
+      fs.writeFileSync(tileDirectory + "index.html", preview(tileLayerName,mapCenter.geometry.coordinates,4,mapBounds));
     }
-    var StaticServer = require('static-server');
+    var StaticServer = require("static-server");
     var server = new StaticServer({
       rootPath: tileDirectory,            // required, the root of the server file tree
-      name: 'my-http-server',   // optional, will set "X-Powered-by" HTTP header
+      name: "my-http-server",   // optional, will set "X-Powered-by" HTTP header
       port: 80,               // optional, defaults to a random port
-      host: '127.0.0.1',       // optional, defaults to any interface
-      cors: '*',                // optional, defaults to undefined
+      host: "127.0.0.1",       // optional, defaults to any interface
+      cors: "*",                // optional, defaults to undefined
       followSymlink: true,      // optional, defaults to a 404 error
       templates: {
-        index: 'index.html',      // optional, defaults to 'index.html'
-        notFound: '404.html'    // optional, defaults to undefined
+        index: "index.html",      // optional, defaults to "index.html"
+        notFound: "404.html"    // optional, defaults to undefined
       }
     });
 
     server.start(function () {
-      console.log('Server listening to', server.port);
+      console.log("Server listening to", server.port);
     });
-    opener('http://127.0.0.1/')
+    opener("http://127.0.0.1/")
   }
 }
