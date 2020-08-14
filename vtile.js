@@ -19,7 +19,7 @@ module.exports = function vtile(args) {
 
   opts.w = (opts.w === true || opts.w === "true" || opts.write === true || opts.write === "true") ? true : false;
   opts.write = opts.w;
-  console.log(opts);
+  // console.log(opts);
 
   if (opts.h || opts.help) {
     console.log("vtile creates vector tiles in mvt format from a geojson file(s) \n \n Usage: command [options]");
