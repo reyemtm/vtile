@@ -9,7 +9,7 @@ module.exports = function startServer(a,f,name) {
 
   const tileDirectory = a;
 
-  console.log(a, name)
+  //console.log(a, name)
 
   var geojsonData;
   try {

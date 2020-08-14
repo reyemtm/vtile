@@ -17,7 +17,7 @@ var geojson2mvt = function (options) {
 
   var layerNames = Object.keys(options.layers);
 
-  console.log(options, layerNames)
+  // console.log(options, layerNames)
 
   var i = 0,
     ii = layerNames.length;

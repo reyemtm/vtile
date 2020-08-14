@@ -26,8 +26,8 @@ module.exports = function writeTiles(data, name, options) {
   const bounds = bbox(geojson);
   const center = getcenter(geojson);
 
-  console.log("bounds: ", bounds);
-  console.log("center: ", center);
+  // console.log("bounds: ", bounds);
+  // console.log("center: ", center);
   //console.log([bounds[1], bounds[0], bounds[3], bounds[2]]);
 
   // write metadata/tilejson and load into map for center and minZoom for tiles
@@ -47,11 +47,11 @@ module.exports = function writeTiles(data, name, options) {
   };
 
   if (options.w) {
-    console.log("trying to write tilejson");
-    console.log(layerDirectory + name + "-tilejson.json");
-    console.log(JSON.stringify(tilejson));
+    // console.log("trying to write tilejson");
+    // console.log(layerDirectory + name + "-tilejson.json");
+    // console.log(JSON.stringify(tilejson));
     fs.writeFile(layerDirectory + name + "-tilejson.json", JSON.stringify(tilejson, null, 2), function() {
-      console.log("successfully wrote tilejson")
+      console.log("successfully wrote tilejson", layerDirectory + name + "-tilejson.json")
     });
   }
 

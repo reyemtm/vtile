@@ -7,10 +7,10 @@ const uuidv1 = require("uuid/v1");
 const rewind = require("@mapbox/geojson-rewind")
 
 module.exports = function validate(gj, tileDirectory, options) {
-    console.log(gj)
+    // console.log(gj)
     if (ext(gj) === "geojson" || ext(gj) === "json") {
       const tileLayerName = (path.basename(gj)).replace(/\..+$/,"");
-      console.log(tileLayerName);
+      // console.log(tileLayerName);
       try {
           console.log("trying to read " + gj);
           // var gjFile = path.join(process.cwd(), gj);
