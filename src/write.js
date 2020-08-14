@@ -9,11 +9,11 @@ module.exports = function writeTiles(data, name, options) {
   //TIMER 
   const start = Date.now();
 
-  const layerDirectory = path.join(process.cwd(), options.t + name + "/");
+  const layerDirectory = path.resolve(process.cwd(), options.t, name + "/");
   if (!options.r) {
     console.log("removing all files in ", layerDirectory, "!");
     try {
-      fs.removeSync(path.join(layerDirectory));
+      fs.removeSync(layerDirectory);
     }catch(e){
       console.log(e)
     }

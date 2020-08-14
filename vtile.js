@@ -35,7 +35,7 @@ module.exports = function vtile(args) {
       throw error
   }
 
-  var tileDirectory = path.join(process.cwd(), opts.t);
+  var tileDirectory = path.resolve(process.cwd(), opts.t);
 
   console.log(tileDirectory);
 
