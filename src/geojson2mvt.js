@@ -17,6 +17,8 @@ var geojson2mvt = function (options) {
 
   var layerNames = Object.keys(options.layers);
 
+  console.log(options, layerNames)
+
   var i = 0,
     ii = layerNames.length;
   var tileIndex = new Array(ii);
@@ -53,7 +55,7 @@ var geojson2mvt = function (options) {
 
     // get the x and y bounds for the current zoom level
     var tileBounds = helpers.getTileBounds(options.bbox, z);
-    console.log(tileBounds)
+    // console.log(tileBounds)
 
     // x loop
     for (var x = tileBounds.xMin; x <= tileBounds.xMax; x++) {
