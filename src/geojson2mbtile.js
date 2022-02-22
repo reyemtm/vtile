@@ -50,8 +50,24 @@ var geojson2mbtile = function (options, config) {
 
   // const db = new Database(options.rootDir + "/" + layerNames[0] + ".mbtiles", {});
 
-  const migration = fs.readFileSync("src/schema.sql", "utf8");
-  db.exec(migration);
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS tiles (
+      zoom_level integer,
+      tile_column integer,
+      tile_row integer,
+      tile_data blob,
+      UNIQUE (
+        zoom_level,
+        tile_column,
+        tile_row
+      )
+    );
+    
+    CREATE TABLE IF NOT EXISTS metadata (
+      name text,
+      value text
+    );
+  `);
 
   writeTiles(db);
   writeMetadata(db);

@@ -58,9 +58,9 @@ if (opts.i === "") {
     validate(path.resolve(geojsonDirectory, file), tileDirectory, opts)
   });
   console.log(previewFile)
-  if (opts.p) startServer(tileDirectory, previewFile, name);
+  if (opts.p && opts.f === "directory") startServer(tileDirectory, previewFile, name);
 }else{
   previewFile = path.resolve(process.cwd(), opts.i)
   validate(opts.i, tileDirectory, opts)
-  if (opts.p) startServer(tileDirectory, previewFile, path.basename(previewFile).replace("." + ext(opts.i), ""));
+  if (opts.p && opts.f === "directory") startServer(tileDirectory, previewFile, path.basename(previewFile).replace("." + ext(opts.i), ""));
 }
