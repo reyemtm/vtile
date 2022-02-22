@@ -14,7 +14,7 @@ var options = cliclopts(allowedOptions);
 var opts = minimist(process.argv.slice(2), options.options());
 opts.w = (opts.w === true || opts.w === "true" || opts.write === true || opts.write === "true") ? true : false;
 opts.write = opts.w;
-console.log(opts);
+// console.log(opts);
 
 if (opts.h || opts.help) {
   console.log("vtile creates vector tiles in mvt format from a geojson file(s) \n \n Usage: command [options]");
@@ -30,11 +30,11 @@ if (opts.Z > 20) {
     throw error
 }
 
-console.log(process.cwd());
+// console.log(process.cwd());
 
 var tileDirectory = path.resolve(process.cwd(), opts.t);
 
-console.log(tileDirectory);
+// console.log(tileDirectory);
 
 if (!fs.existsSync(tileDirectory)) {
   fs.mkdirSync(tileDirectory);
@@ -57,7 +57,7 @@ if (opts.i === "") {
     }
     validate(path.resolve(geojsonDirectory, file), tileDirectory, opts)
   });
-  console.log(previewFile)
+  // console.log(previewFile)
   if (opts.p && opts.f === "directory") startServer(tileDirectory, previewFile, name);
 }else{
   previewFile = path.resolve(process.cwd(), opts.i)

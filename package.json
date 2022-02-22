@@ -1,6 +1,6 @@
 {
   "name": "vtile",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple Node and command line tool to create vector tiles (directory or mbtiles) in JavaScript from one or more geojson files using geojson2mvt, geojson-vt, and TurfJS.",
   "main": "index.js",
   "bin": {

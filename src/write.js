@@ -61,7 +61,6 @@ module.exports = function writeTiles(data, name, options, fields) {
   };
 
   if (!options.w) {
-    console.log(options.w);
     console.log("not writing tiles, script complete");
   } else {
     if (options.f === "directory") {
