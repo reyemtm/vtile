@@ -3,3 +3,5 @@
 /tiles
 *.pbf
 *.mvt
+tiles-mbtiles/
+tmp/

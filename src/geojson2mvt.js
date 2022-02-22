@@ -74,11 +74,12 @@ var geojson2mvt = function (options) {
 
         console.log(`Getting tile ${z} ${x} ${y} `)
         var mvt = getTile(z, x, y, tileIndex, layerNames);
-
         // TODO what should be written to the tile if there is no data?
         var output = mvt !== null ? mvt : '';
-        fs.writeFileSync(`${xPath}/${y}.mvt`, output);
-        tileCount++;
+        if (mvt) {
+          fs.writeFileSync(`${xPath}/${y}.mvt`, output);
+          tileCount++;
+        }
 
       }
     }

@@ -1,15 +1,13 @@
 const opener = require("opener");
 const preview = require("./preview.js");
 const fs = require("fs");
-const bbox = require("@turf/bbox");
-const getCenter = require("@turf/center");
+const bbox = require("@turf/bbox").default;
+const getCenter = require("@turf/center").default;
 const StaticServer = require("static-server");
 
 module.exports = function startServer(a,f,name) {
 
   const tileDirectory = a;
-
-  //console.log(a, name)
 
   var geojsonData;
   try {
@@ -22,7 +20,7 @@ module.exports = function startServer(a,f,name) {
   const bounds = bbox(geojson);
   const mapBounds = [ [bounds[0], bounds[1]], [bounds[2], bounds[3]] ];
   const center = getCenter(geojson);
-  fs.writeFileSync(tileDirectory + "index.html", preview(name,center.geometry.coordinates, mapBounds));
+  fs.writeFileSync(tileDirectory + "/index.html", preview(name,center.geometry.coordinates, mapBounds));
 
   const server = new StaticServer({
     rootPath: tileDirectory,            // required, the root of the server file tree

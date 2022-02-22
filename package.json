@@ -1,13 +1,15 @@
 {
   "name": "vtile",
-  "version": "0.3.3",
-  "description": "Automation of geojson2mvt using TurfJS",
-  "main": "vtile.js",
+  "version": "1.0.0",
+  "description": "A simple Node and command line tool to create vector tiles (directory or mbtiles) in JavaScript from one or more geojson files using geojson2mvt, geojson-vt, and TurfJS.",
+  "main": "index.js",
   "bin": {
     "vtile": "./bin/vtile.js"
   },
   "scripts": {
-    "test": "node test/test.js"
+    "start": "node bin/vtile -i data/ohio.geojson -p",
+    "build": "node __tests__/test.js",
+    "test": "jest index.test.js"
   },
   "repository": {
     "type": "git",
@@ -15,9 +17,13 @@
   },
   "keywords": [
     "vector tiles",
+    "vector-tiles",
     "geojson",
     "turfjs",
-    "spatial"
+    "spatial",
+    "mbtiles",
+    "maps",
+    "gis"
   ],
   "author": "Malcolm Meyer | zeroSpatial",
   "license": "MIT",
@@ -26,18 +32,23 @@
   },
   "homepage": "https://github.com/zerospatial/vtile#readme",
   "dependencies": {
-    "@mapbox/geojson-rewind": "^0.5.0",
-    "@turf/bbox": "^5.1.5",
-    "@turf/center": "^5.1.5",
+    "@mapbox/geojson-rewind": "^0.5.1",
+    "@turf/bbox": "^6.5.0",
+    "@turf/center": "^6.5.0",
+    "better-sqlite3": "^7.5.0",
     "cliclopts": "^1.1.1",
-    "file-extension": "^4.0.2",
-    "fs-extra": "^6.0.0",
-    "geojson-validation": "^0.2.0",
+    "file-extension": "^4.0.5",
+    "fs-extra": "^10.0.0",
+    "geojson-validation": "^1.0.2",
     "geojson-vt": "^3.2.1",
-    "minimist": "^1.2.0",
-    "opener": "^1.4.3",
+    "minimist": "^1.2.5",
+    "opener": "^1.5.2",
     "static-server": "^3.0.0",
-    "uuid": "^3.2.1",
-    "vt-pbf": "^2.1.4"
+    "uuid": "^8.3.2",
+    "vt-pbf": "^3.1.3",
+    "zlib": "^1.0.5"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
   }
 }

@@ -1,5 +1,3 @@
-var fs = require('fs');
-
 const createMap = function(lyr, cntr, bounds) {
     return `
     <!DOCTYPE html>

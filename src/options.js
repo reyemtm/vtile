@@ -1,8 +1,8 @@
 
 module.exports = [
   {
-    name: "file",
-    abbr: "f",
+    name: "input",
+    abbr: "i",
     default: "",
     help: "your geojson file if not using a directory, path must be relative, layer name will be the name of the file (no spaces please)"
   },
@@ -81,5 +81,11 @@ module.exports = [
     abbr: "h",
     help: "show help",
     boolean: true
+  },
+  {
+    name: "format",
+    abbr: "f",
+    help: "Format can be either directory or mbtiles",
+    default: "directory"
   }
 ];

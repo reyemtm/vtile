@@ -42,13 +42,13 @@ if (!fs.existsSync(tileDirectory)) {
 
 }
 
-if (!opts.f) {
+if (!opts.i) {
   var geojsonDirectory = path.resolve(process.cwd(), opts.d);
 }
 
 let previewFile = "";
 
-if (opts.f === "") {
+if (opts.i === "") {
   let name = ""
   fs.readdirSync(geojsonDirectory).forEach(file => {
     if (ext(file) === "geojson" || ext(file) === "json") {
@@ -60,7 +60,7 @@ if (opts.f === "") {
   console.log(previewFile)
   if (opts.p) startServer(tileDirectory, previewFile, name);
 }else{
-  previewFile = path.resolve(process.cwd(), opts.f)
-  validate(opts.f, tileDirectory, opts)
-  if (opts.p) startServer(tileDirectory, previewFile, path.basename(previewFile).replace("." + ext(opts.f), ""));
+  previewFile = path.resolve(process.cwd(), opts.i)
+  validate(opts.i, tileDirectory, opts)
+  if (opts.p) startServer(tileDirectory, previewFile, path.basename(previewFile).replace("." + ext(opts.i), ""));
 }

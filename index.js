@@ -43,16 +43,16 @@ module.exports = function vtile(args) {
     fs.mkdirSync(tileDirectory);
   }
 
-  if (!opts.f) {
+  if (!opts.i) {
     var geojsonDirectory = path.resolve(process.cwd(), opts.d);
   }
 
-  if (opts.f === "") {
+  if (opts.i === "") {
     fs.readdirSync(geojsonDirectory).forEach(file => {
       validate(path.resolve(geojsonDirectory, file), tileDirectory, opts)
     });
   }else{
-    validate(opts.f, tileDirectory, opts)
+    validate(opts.i, tileDirectory, opts)
   }
 }
 

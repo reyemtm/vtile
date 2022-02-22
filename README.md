@@ -1,19 +1,51 @@
 # vtile
-### Command-line static vector tile generation from a single GeoJSON file or a directory of files.
 
-Install (Size installed - 5.9 MB, ``tylr`` size installed 112 MB)
+A simple Node and command line tool to create vector tiles (directory or mbtiles) in JavaScript from one or more geojson files using geojson2mvt, geojson-vt, and TurfJS.
 
     npm install vtile -g
 
 Then to create vector tiles for a single file:
 
-    vtile -f "./data/ohio.geojson"
+    vtile -i "./data/ohio.geojson" -f directory
+
+> For large input files increase the available Node memory ``--max-old-space-size=8192``.
 
 For a directory of files simple call `vtile` in the directory of geojson files or point it to a directory:
 
     vtile -d "./data/"
 
+## Benchmarks for Formats
+
+**Writing to mbtiles is 10x-70x faster!**
+
+### Directory
+
+``-Z 15 -i ohio.geojson -f directory``
+
+``` 
+Done! I made 168030 tiles!
+tiles done at 158.639 seconds
+```
+
+### MBTiles
+
+``-Z 15 -i ohio.geojson -f mbtiles``
+
+```
+Done! I made 168030 tiles!
+tiles done at 3.933 seconds
+```
+
+---
+
 ![](vtile.gif)
+
+**v 1.0.0**
+ - **Breaking Changes** `-f is now -i` and `-f` translates to the output format, either `-f mbtiles` or `-f directory`.
+ - Added writing vector tiles to mbtiles format using `better-sqlite3`.
+ - The `mbtiles` output can be viewed with [mbview](https://github.com/mapbox/mbview) or any mbtiles server.
+
+---
 
 **v 0.2.0** 
  - `vtile` now writes tiles by default, just use the -f option `vtile -f data/ohio.geojson` and tiles will be created in a 'tiles' folder in the working directory.
@@ -33,11 +65,12 @@ For options use ``vtile -h``.
 
 ```
 Usage: command [options]
-    --file, -f            your geojson file if not using directory option
+    --format, -f          output format, choices are mbtiles or directory (default: directory)
+    --input, -i           your geojson file if not using directory option
     --tiles-dir, -t       directory to store the vector tiles (default: "tiles/")
     --geojson-dir, -d     directory of GeoJSON files you want to convert (default './')
     --minzoom, -z         min zoom level to build tiles (default: 0)
-    --maxzoom, -Z         max zoom to build tiles (tiles will overzoom in mapbox gl, leaflet and ol3) (default: 7)
+    --maxzoom, -Z         max zoom to build tiles (tiles will overzoom in mapbox gl, leaflet and ol3) (default: 5)
     --extract, -x         remove these properties from the geojson file(s), one for each field, i.e -x "COUNTY" -x "Shape_Length"
     --output, -o          output the geojson file(s), useful if using the extract option
     --write, -w           vtile will not write any tiles with -w false (default: true)
@@ -46,6 +79,6 @@ Usage: command [options]
     --help, -h            show help
 ```
 
-This project uses [TurfJS](https://github.com/Turfjs/turf/) to automate static vector tile creation using [geojson2mvt](https://github.com/NYCPlanning/geojson2mvt). Only turf/center and turf/bbox are used.
+This project uses [TurfJS](https://github.com/Turfjs/turf/) to automate vector tile creation in JavaScript using [geojson2mvt](https://github.com/NYCPlanning/geojson2mvt), which uses [geojson-vt](https://github.com/mapbox/geojson-vt) internally.
 
 Sample GeoJSON file from here - http://eric.clst.org/tech/usgeojson/
